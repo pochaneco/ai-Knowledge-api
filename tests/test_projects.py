@@ -38,8 +38,12 @@ class TestProjects:
         assert 'projects' in response.json
         assert isinstance(response.json['projects'], list)
     
-    def test_get_project_detail(self, authenticated_client, test_project):
+    def test_get_project_detail(self, app, authenticated_client, test_user, test_project):
         """プロジェクト詳細取得テスト"""
+        with app.app_context():
+            # test_userがプロジェクトのオーナーであることを確認
+            assert test_project.owner_id == test_user.id
+            
         response = authenticated_client.get(f'/api/v1/projects/{test_project.id}')
         assert response.status_code == 200
         assert 'project' in response.json

@@ -8,6 +8,7 @@ on:
 
 jobs:
   test:
+    name: Test with Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
 
     strategy:
@@ -66,12 +67,13 @@ jobs:
         run: |
           pytest tests/ -v --cov=app --cov-report=xml
         env:
-          FLASK_ENV: testing
+          USE_MYSQL_FOR_TESTING: "1"
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
           DB_USER: test_user
           DB_PASSWORD: test_password
           DB_NAME: test_ai_knowledge_db
+          PYTHONPATH: .
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3

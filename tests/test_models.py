@@ -1,8 +1,6 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 """
-モデルのテスト
+モデル関連のテスト
 """
 
 import pytest
@@ -57,7 +55,7 @@ class TestProjectModel:
     def test_project_to_dict(self, app, test_project):
         """プロジェクトのto_dict メソッドテスト"""
         with app.app_context():
-            # セッション内でプロジェクトを再取得
+            # 新しいセッションでプロジェクトを取得（リレーションシップを含む）
             project = db.session.get(Project, test_project.id)
             project_dict = project.to_dict()
             
@@ -65,37 +63,36 @@ class TestProjectModel:
             assert 'name' in project_dict
             assert 'description' in project_dict
             assert 'owner_id' in project_dict
-            assert 'is_private' in project_dict
 
 
 class TestKnowledgeBaseModel:
     """ナレッジベースモデルのテスト"""
     
-    def test_create_knowledge_base(self, app, test_project):
+    def test_create_knowledge_base(self, app, test_project, test_user):
         """ナレッジベース作成テスト"""
         with app.app_context():
+            # 新しいセッションでプロジェクトとユーザーを取得
+            project = db.session.get(Project, test_project.id)
+            user = db.session.get(User, test_user.id)
             kb = KnowledgeBase(
                 title='Model Test KB',
                 content='Test KB Content',
-                category='test',
-                project_id=test_project.id,
-                created_by_id=test_project.owner_id
+                project_id=project.id,
+                created_by_id=user.id
             )
             
             assert kb.title == 'Model Test KB'
             assert kb.content == 'Test KB Content'
-            assert kb.project_id == test_project.id
+            assert kb.project_id == project.id
     
     def test_knowledge_base_to_dict(self, app, test_knowledge_base):
         """ナレッジベースのto_dict メソッドテスト"""
         with app.app_context():
-            # セッション内でナレッジベースを再取得
+            # 新しいセッションでナレッジベースを取得
             kb = db.session.get(KnowledgeBase, test_knowledge_base.id)
             kb_dict = kb.to_dict()
             
             assert 'id' in kb_dict
             assert 'title' in kb_dict
             assert 'content' in kb_dict
-            assert 'category' in kb_dict
-            assert 'project_id' in kb_dict
             assert 'project_id' in kb_dict

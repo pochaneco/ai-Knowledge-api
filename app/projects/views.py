@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-プロジェクトルーティング設定
+プロジェクトビュー（Webページ）
 """
 
-from flask import Blueprint, render_template
+from flask import Blueprint
+from app.inertia_config import render
 
 
 project_bp = Blueprint('project', __name__, url_prefix='/projects')
@@ -12,28 +13,28 @@ project_bp = Blueprint('project', __name__, url_prefix='/projects')
 @project_bp.route('/')
 def index():
     """プロジェクト一覧ページ"""
-    return render_template('projects/index.html')
+    return render('projects/Index')
 
 
 @project_bp.route('/<int:project_id>')
 def detail(project_id):
     """プロジェクト詳細ページ"""
-    return render_template('projects/detail.html', project_id=project_id)
+    return render('projects/Detail', {'project_id': project_id})
 
 
 @project_bp.route('/create')
 def create():
     """プロジェクト作成ページ"""
-    return render_template('projects/create.html')
+    return render('projects/Create')
 
 
 @project_bp.route('/<int:project_id>/edit')
 def edit(project_id):
     """プロジェクト編集ページ"""
-    return render_template('projects/edit.html', project_id=project_id)
+    return render('projects/Edit', {'project_id': project_id})
 
 
 @project_bp.route('/<int:project_id>/members')
 def members(project_id):
     """プロジェクトメンバー管理ページ"""
-    return render_template('projects/members.html', project_id=project_id)
+    return render('projects/Members', {'project_id': project_id})

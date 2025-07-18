@@ -31,7 +31,7 @@ services:
     env_file:
       - .env
     ports:
-      - "${WEB_API_PORT:-5001}:5000"
+      - "${WEB_API_PORT:-5000}:5000"
     environment:
       FLASK_ENV: ${FLASK_ENV:-development}
       FLASK_APP: ${FLASK_APP:-app.py}
@@ -44,12 +44,39 @@ services:
     volumes:
       - .:/app
       - /app/__pycache__
+      - /app/node_modules
     depends_on:
       - db
     networks:
       - ai-knowledge-network
+    command: >
+      sh -c "flask db upgrade && python app.py"
 
-  # phpMyAdmin (データベース管理用、オプション)
+  # Node.js開発環境（フロントエンド用）
+  frontend:
+    build: .
+    container_name: ai-knowledge-frontend
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+    volumes:
+      - .:/app
+      - /app/node_modules
+    working_dir: /app
+    command: npm run dev
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - VITE_HOST=0.0.0.0
+      - VITE_PORT=${VITE_PORT:-5173}
+    networks:
+      - ai-knowledge-network
+    profiles:
+      - dev
+      - ai-knowledge-network
+
+  # phpMyAdmin (データベース管理用、開発時のみ)
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     container_name: ai-knowledge-phpmyadmin
@@ -60,11 +87,15 @@ services:
       PMA_PASSWORD: ${DB_PASSWORD:-app_password}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_password}
     ports:
-      - "8080:80"
+      - "${PHP_MY_ADMIN_PORT:-8080}:80"
     depends_on:
       - db
     networks:
       - ai-knowledge-network
+    profiles:
+      - dev
+
+  # MailHog (メール開発用)
   mailhog:
     image: mailhog/mailhog
     container_name: ai-knowledge-mailhog
@@ -74,6 +105,45 @@ services:
       - "${MAILHOG_WEB_PORT:-8025}:8025"   # Web UI
     networks:
       - ai-knowledge-network
+    profiles:
+      - dev
+
+  # テスト実行環境（MySQLを使用した統合テスト用）
+  test:
+    build: .
+    container_name: ai-knowledge-test
+    env_file:
+      - .env
+    environment:
+      FLASK_ENV: testing
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: ${DB_USER:-app_user}
+      DB_PASSWORD: ${DB_PASSWORD:-app_password}
+      DB_NAME: test_${DB_NAME:-ai_knowledge_db}
+      SECRET_KEY: test-secret-key
+      USE_MYSQL_FOR_TESTING: "true"
+    volumes:
+      - .:/app
+      - /app/__pycache__
+    depends_on:
+      - db
+    networks:
+      - ai-knowledge-network
+    profiles:
+      - test
+    command: >
+      sh -c "
+        echo 'Waiting for database...' &&
+        while ! mysqladmin ping -h db -u root -p${MYSQL_ROOT_PASSWORD:-root_password} --silent; do
+          sleep 1
+        done &&
+        echo 'Creating test database...' &&
+        mysql -h db -u root -p${MYSQL_ROOT_PASSWORD:-root_password} -e 'CREATE DATABASE IF NOT EXISTS test_${DB_NAME:-ai_knowledge_db}; GRANT ALL PRIVILEGES ON test_${DB_NAME:-ai_knowledge_db}.* TO \"${DB_USER:-app_user}\"@\"%\";' &&
+        echo 'Running tests...' &&
+        cd /app &&
+        PYTHONPATH=/app pytest -v --cov=app --cov-report=term-missing --cov-report=html
+      "
 
 volumes:
   mysql_data:

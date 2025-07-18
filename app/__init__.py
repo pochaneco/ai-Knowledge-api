@@ -21,6 +21,10 @@ def create_app(config_name=None):
     # 拡張機能を初期化
     init_extensions(app)
     
+    # Viteヘルパーを初期化
+    from .utils.vite_helpers import init_vite_helpers
+    init_vite_helpers(app)
+    
     # Blueprintを登録
     register_blueprints(app)
     

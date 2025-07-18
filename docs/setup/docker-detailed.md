@@ -8,21 +8,24 @@
 
 1. **環境変数ファイルの準備**
    ```bash
-   # Docker開発用設定をコピー
-   cp .env.docker .env.local
+   # Docker開発用設定をコピー（参考用）
+   cp .env.docker.example .env.docker.local
    
    # または .env.example から手動で設定
-   cp .env.example .env.local
-   # .env.local を編集して適切な値を設定
+   cp .env.example .env
+   # .env を編集して適切な値を設定
    ```
 
 2. **Docker Composeでサービスを起動**
    ```bash
-   # バックグラウンドで起動
+   # 開発モードでバックグラウンド起動（推奨）
+   docker-compose --profile dev up -d
+   
+   # 本番モードで起動
    docker-compose up -d
    
    # ログを確認しながら起動
-   docker-compose up
+   docker-compose --profile dev up
    ```
 
 3. **マイグレーションの実行**

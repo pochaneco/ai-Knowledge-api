@@ -17,12 +17,16 @@ def init_extensions(app):
     """Flask拡張機能を初期化"""
     from app.models import db, User
     from app.email import init_mail
+    from app.inertia_config import init_inertia
     
     # データベース初期化
     db.init_app(app)
     
     # マイグレーション初期化
     migrate.init_app(app, db)
+    
+    # Inertia.js初期化
+    inertia = init_inertia(app)
     
     # Flask-Login初期化
     login_manager.init_app(app)
@@ -31,7 +35,8 @@ def init_extensions(app):
     
     @login_manager.user_loader
     def load_user(user_id):
-        return User.query.get(int(user_id))
+        from app.models import db
+        return db.session.get(User, int(user_id))
     
     # メールサービス初期化
     init_mail(app)
@@ -48,4 +53,4 @@ def init_extensions(app):
         client_kwargs={'scope': 'openid email profile'}
     )
     
-    return google
+    return google, inertia

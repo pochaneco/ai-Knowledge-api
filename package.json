@@ -1,0 +1,42 @@
+{
+  "name": "ai-knowledge-api",
+  "version": "1.0.0",
+  "description": "AI Knowledge API with Inertia.js Frontend",
+  "main": "frontend/src/app.js",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview",
+    "dev:frontend": "vite --host 0.0.0.0",
+    "dev:backend": "./scripts/run_app.sh local",
+    "dev:full": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "backend:prod": "./scripts/run_app.sh production",
+    "install:all": "npm install && pip install -r requirements.txt",
+    "docker:install": "echo 'Installing dependencies in Docker...'",
+    "docker:dev": "echo 'Starting development server in Docker...'"
+  },
+  "keywords": [
+    "inertia",
+    "vue",
+    "flask",
+    "api"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@inertiajs/vue3": "^1.0.0",
+    "@vitejs/plugin-vue": "^4.4.0",
+    "vue": "^3.3.0",
+    "vue-router": "^4.2.0",
+    "axios": "^1.5.0",
+    "pinia": "^2.1.0"
+  },
+  "devDependencies": {
+    "vite": "^4.4.0",
+    "@types/node": "^20.0.0",
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8.4.0",
+    "tailwindcss": "^3.3.0",
+    "concurrently": "^8.2.0"
+  }
+}
