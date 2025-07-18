@@ -1,0 +1,25 @@
+RewriteEngine On
+
+# CGIファイルの実行許可
+Options +ExecCGI
+AddHandler cgi-script .cgi
+
+# index.cgiをデフォルトファイルに設定
+DirectoryIndex index.cgi
+
+# 全てのリクエストをindex.cgiにリダイレクト（Flask のルーティングを有効にする）
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.cgi/$1 [QSA,L]
+
+# セキュリティ: .pyファイルの直接アクセスを禁止
+<Files "*.py">
+    Order deny,allow
+    Deny from all
+</Files>
+
+# セキュリティ: 設定ファイルの直接アクセスを禁止
+<Files ".htaccess">
+    Order deny,allow
+    Deny from all
+</Files>

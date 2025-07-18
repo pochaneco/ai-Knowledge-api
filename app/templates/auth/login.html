@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}ログイン -
+  {{ super() }}
+{% endblock %}
+
+{% block content %}
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="mb-0">ログイン</h4>
+        </div>
+        <div class="card-body">
+          <form id="loginForm">
+            <div class="mb-3">
+              <label for="email" class="form-label">メールアドレス</label>
+              <input type="email" class="form-control" id="email" name="email" required="required">
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">パスワード</label>
+              <input type="password" class="form-control" id="password" name="password" required="required">
+            </div>
+            <div class="mb-3 form-check">
+              <input type="checkbox" class="form-check-input" id="remember">
+              <label class="form-check-label" for="remember">
+                ログイン状態を保持する
+              </label>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">ログイン</button>
+          </form>
+
+          <hr>
+
+          <div class="text-center">
+            <button class="btn btn-danger w-100 mb-2" onclick="loginWithGoogle()">
+              <i class="fab fa-google"></i>
+              Googleでログイン
+            </button>
+          </div>
+
+          <div class="text-center mt-3">
+            <p>
+              <a href="{{ url_for('auth.forgot_password') }}">パスワードを忘れた方はこちら</a>
+            </p>
+            <p>アカウントをお持ちでない方は
+              <a href="{{ url_for('auth.register') }}">こちらから登録</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    document
+      .getElementById('loginForm')
+      .addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        const data = {
+          email: formData.get('email'),
+          password: formData.get('password')
+        };
+
+        try {
+          const response = await fetch('/api/v1/auth/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            alert('ログインしました');
+            window.location.href = '/projects';
+          } else {
+            alert(result.error || 'ログインに失敗しました');
+          }
+        } catch (error) {
+          alert('ネットワークエラーが発生しました');
+        }
+      });
+
+    function loginWithGoogle() {
+      window.location.href = '/auth/google';
+    }
+  </script>
+{% endblock %}

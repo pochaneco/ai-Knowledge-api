@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}AI Knowledge API - 知識管理とAI検索のプラットフォーム{% endblock %}
+
+{% block content %}
+  <!-- ヒーローセクション -->
+  <div class="bg-gradient-primary text-white py-5 mb-5 rounded">
+    <div class="container text-center">
+      <h1 class="display-4 fw-bold mb-4">AI Knowledge API</h1>
+      <p class="lead mb-4">知識管理とAI検索の次世代プラットフォーム</p>
+      <p class="mb-4">プロジェクトベースでナレッジベースを構築し、AIを活用した高度な検索機能でチームの知識を最大化しましょう。</p>
+      <div class="d-flex justify-content-center gap-3">
+        <a href="{{ url_for('auth_views.register') }}" class="btn btn-light btn-lg">今すぐ始める</a>
+        <a href="{{ url_for('main.docs') }}" class="btn btn-outline-light btn-lg">ドキュメント</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 機能紹介 -->
+  <div class="row mb-5">
+    <div class="col-md-4 mb-4">
+      <div class="card h-100 text-center">
+        <div class="card-body">
+          <div class="text-primary mb-3">
+            <i class="fas fa-project-diagram fa-3x"></i>
+          </div>
+          <h5 class="card-title">プロジェクト管理</h5>
+          <p class="card-text">プロジェクトごとにナレッジベースを作成し、チームメンバーと共有。アクセス制御で安全な知識管理を実現。</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="card h-100 text-center">
+        <div class="card-body">
+          <div class="text-primary mb-3">
+            <i class="fas fa-brain fa-3x"></i>
+          </div>
+          <h5 class="card-title">AI検索</h5>
+          <p class="card-text">自然言語での検索でナレッジベース内の情報を瞬時に発見。AI技術による意味的検索で関連情報も見つけられます。</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="card h-100 text-center">
+        <div class="card-body">
+          <div class="text-primary mb-3">
+            <i class="fas fa-users fa-3x"></i>
+          </div>
+          <h5 class="card-title">チーム連携</h5>
+          <p class="card-text">メンバー招待機能でチーム全体の知識を統合。権限管理により適切なアクセス制御を実現。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 統計情報 -->
+  <div class="bg-light py-5 mb-5 rounded">
+    <div class="container">
+      <div class="row text-center">
+        <div class="col-md-3 mb-3">
+          <h3 class="text-primary fw-bold">1000+</h3>
+          <p class="mb-0">アクティブユーザー</p>
+        </div>
+        <div class="col-md-3 mb-3">
+          <h3 class="text-primary fw-bold">500+</h3>
+          <p class="mb-0">プロジェクト</p>
+        </div>
+        <div class="col-md-3 mb-3">
+          <h3 class="text-primary fw-bold">10000+</h3>
+          <p class="mb-0">ナレッジベース</p>
+        </div>
+        <div class="col-md-3 mb-3">
+          <h3 class="text-primary fw-bold">99.9%</h3>
+          <p class="mb-0">稼働率</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 使い方 -->
+  <div class="mb-5">
+    <h2 class="text-center mb-5">簡単3ステップで始められます</h2>
+    <div class="row">
+      <div class="col-md-4 text-center mb-4">
+        <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+          <span class="fw-bold fs-4">1</span>
+        </div>
+        <h5>アカウント作成</h5>
+        <p>Google認証またはメールアドレスでアカウントを作成します。</p>
+      </div>
+      <div class="col-md-4 text-center mb-4">
+        <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+          <span class="fw-bold fs-4">2</span>
+        </div>
+        <h5>プロジェクト作成</h5>
+        <p>プロジェクトを作成し、チームメンバーを招待します。</p>
+      </div>
+      <div class="col-md-4 text-center mb-4">
+        <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+          <span class="fw-bold fs-4">3</span>
+        </div>
+        <h5>知識を蓄積</h5>
+        <p>ナレッジベースを作成し、AIを活用した検索を始めます。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="text-center py-5">
+    <h2 class="mb-4">今すぐAI Knowledge APIを始めましょう</h2>
+    <p class="lead mb-4">無料でアカウントを作成して、チームの知識管理を革新しませんか？</p>
+    <a href="{{ url_for('auth_views.register') }}" class="btn btn-primary btn-lg">無料で始める</a>
+  </div>
+{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}

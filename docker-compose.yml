@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  # MySQLデータベース
+  db:
+    image: mysql:8.0
+    container_name: ai-knowledge-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_password}
+      MYSQL_DATABASE: ${DB_NAME:-ai_knowledge_db}
+      MYSQL_USER: ${DB_USER:-app_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-app_password}
+    ports:
+      - "${DB_FORWARD_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+      - ai-knowledge-network
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --default-authentication-plugin=mysql_native_password
+
+  # Flaskアプリケーション
+  web:
+    build: .
+    container_name: ai-knowledge-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "${WEB_API_PORT:-5001}:5000"
+    environment:
+      FLASK_ENV: ${FLASK_ENV:-development}
+      FLASK_APP: ${FLASK_APP:-app.py}
+      DB_HOST: db
+      DB_PORT: ${DB_PORT:-3306}
+      DB_USER: ${DB_USER:-app_user}
+      DB_PASSWORD: ${DB_PASSWORD:-app_password}
+      DB_NAME: ${DB_NAME:-ai_knowledge_db}
+      SECRET_KEY: ${SECRET_KEY:-your-secret-key-here}
+    volumes:
+      - .:/app
+      - /app/__pycache__
+    depends_on:
+      - db
+    networks:
+      - ai-knowledge-network
+
+  # phpMyAdmin (データベース管理用、オプション)
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: ai-knowledge-phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db
+      PMA_USER: ${DB_USER:-app_user}
+      PMA_PASSWORD: ${DB_PASSWORD:-app_password}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_password}
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    networks:
+      - ai-knowledge-network
+  mailhog:
+    image: mailhog/mailhog
+    container_name: ai-knowledge-mailhog
+    restart: unless-stopped
+    ports:
+      - "${MAILHOG_SMTP_PORT:-1025}:1025"  # SMTP server
+      - "${MAILHOG_WEB_PORT:-8025}:8025"   # Web UI
+    networks:
+      - ai-knowledge-network
+
+volumes:
+  mysql_data:
+
+networks:
+  ai-knowledge-network:
+    driver: bridge
