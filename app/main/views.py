@@ -13,7 +13,7 @@ main_bp = Blueprint('main', __name__)
 @main_bp.route('/')
 def index():
     """ホームページ"""
-    return render('Home')
+    return render('Home/Home')
 
 
 @main_bp.route('/about')

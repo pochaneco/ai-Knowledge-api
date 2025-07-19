@@ -1,6 +1,6 @@
 # API仕様
 
-AI Knowledge API v1の詳細な仕様書です。
+Vidays v1の詳細な仕様書です。
 
 ## 🌐 ベースURL
 

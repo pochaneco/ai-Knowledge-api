@@ -82,12 +82,12 @@ class AuthService:
         verification_url = url_for('auth.verify_email', token=token, _external=True)
         
         msg = Message(
-            subject='【AI Knowledge API】メールアドレスの認証',
+            subject='【Vidays】メールアドレスの認証',
             recipients=[user.email],
             html=f'''
             <h2>メールアドレスの認証</h2>
             <p>こんにちは {user.username} さん</p>
-            <p>AI Knowledge APIへのご登録ありがとうございます。</p>
+            <p>Vidaysへのご登録ありがとうございます。</p>
             <p>以下のリンクをクリックしてメールアドレスを認証してください：</p>
             <p><a href="{verification_url}" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">メールアドレスを認証する</a></p>
             <p>このリンクは1時間で有効期限が切れます。</p>
@@ -172,7 +172,7 @@ class AuthService:
         reset_url = url_for('auth.reset_password', token=token, _external=True)
         
         msg = Message(
-            subject='【AI Knowledge API】パスワードリセット',
+            subject='【Vidays】パスワードリセット',
             recipients=[user.email],
             html=f'''
             <h2>パスワードリセット</h2>

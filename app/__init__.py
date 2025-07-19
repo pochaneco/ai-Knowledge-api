@@ -34,6 +34,9 @@ def create_app(config_name=None):
     # メインルートを登録
     register_main_routes(app)
     
+    # テンプレートグローバル関数を登録
+    register_template_globals(app)
+    
     return app
 
 
@@ -80,6 +83,15 @@ def register_main_routes(app):
     def health_check():
         """ヘルスチェックエンドポイント"""
         return {'status': 'healthy', 'version': '2.0.0'}
+
+
+def register_template_globals(app):
+    """テンプレートグローバル関数を登録"""
+    
+    @app.template_global()
+    def csrf_token():
+        """CSRF トークンを生成（開発用の簡易実装）"""
+        return "development-csrf-token"
 
 
 # アプリケーションの作成（開発サーバー用）

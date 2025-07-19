@@ -1,7 +1,7 @@
-# AI Knowledge API - 推奨ディレクトリ構造
+# Vidays - 推奨ディレクトリ構造
 
 ```
-ai-Knowledge-api/
+vidays/
 ├── app/                          # メインアプリケーションディレクトリ
 │   ├── __init__.py              # アプリケーションファクトリ
 │   ├── models/                  # データベースモデル

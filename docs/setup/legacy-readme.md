@@ -1,4 +1,4 @@
-# AI Knowledge API
+# Vidays
 
 AI知識管理APIです。
 プロジェクトごとに知識を管理できます。

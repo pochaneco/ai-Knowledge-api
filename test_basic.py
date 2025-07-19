@@ -4,7 +4,8 @@ import sys
 import os
 
 # Add the project root to Python path
-sys.path.insert(0, '/Users/so/code/ai-Knowledge-api')
+project_root = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, project_root)
 
 try:
     from app import create_app

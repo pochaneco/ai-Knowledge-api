@@ -45,33 +45,51 @@ class InertiaFlask:
         if props is None:
             props = {}
         
-        # 共有データを取得
-        shared = self.get_shared_data()
-        
-        # ページデータを作成
-        page_data = {
-            'component': component,
-            'props': {**shared, **props},
-            'url': request.url,
-            'version': self.version,
-        }
-        
-        # InertiaリクエストかHTMLリクエストかを判定
-        if request.headers.get('X-Inertia'):
-            # Inertiaリクエストの場合はJSONレスポンス
-            response = make_response(json.dumps(page_data))
-            response.headers['Content-Type'] = 'application/json'
-            response.headers['Vary'] = 'Accept'
-            response.headers['X-Inertia'] = 'true'
-            return response
-        else:
-            # 通常のHTMLリクエストの場合
-            return render_template(self.template, page=json.dumps(page_data))
+        try:
+            # 共有データを取得
+            shared = self.get_shared_data()
+            
+            # ページデータを作成
+            page_data = {
+                'component': component,
+                'props': {**shared, **props},
+                'url': request.url,
+                'version': self.version,
+            }
+            
+            # デバッグ: 生成されたページデータをログ出力
+            print(f"Generated page data: {page_data}")
+            
+            # InertiaリクエストかHTMLリクエストかを判定
+            if request.headers.get('X-Inertia'):
+                # Inertiaリクエストの場合はJSONレスポンス
+                response = make_response(json.dumps(page_data, ensure_ascii=False))
+                response.headers['Content-Type'] = 'application/json'
+                response.headers['Vary'] = 'Accept'
+                response.headers['X-Inertia'] = 'true'
+                return response
+            else:
+                # 通常のHTMLリクエストの場合
+                # pageデータはテンプレート内でdata-pageに設定され、
+                # フロントエンドでJSON.parseされる
+                return render_template(self.template, page=page_data)
+        except Exception as e:
+            # エラーが発生した場合のフォールバック
+            print(f"Inertia render error: {e}")
+            fallback_data = {
+                'component': component,
+                'props': props or {},
+                'url': request.url,
+                'version': self.version,
+            }
+            return render_template(self.template, page=fallback_data)
     
     def get_shared_data(self):
         """共有データを取得"""
+        from flask import session
+        
         shared_data = {
-            'csrf_token': session.get('csrf_token'),
+            'csrf_token': session.get('csrf_token', 'development-csrf-token'),
             'flash': {
                 'success': session.pop('flash_success', None),
                 'error': session.pop('flash_error', None),
@@ -80,16 +98,22 @@ class InertiaFlask:
         }
         
         # ユーザー情報を共有
-        if current_user.is_authenticated:
-            shared_data['auth'] = {
-                'user': {
-                    'id': current_user.id,
-                    'username': current_user.username,
-                    'email': current_user.email,
-                    'display_name': getattr(current_user, 'display_name', None),
+        try:
+            if current_user.is_authenticated:
+                shared_data['auth'] = {
+                    'user': {
+                        'id': current_user.id,
+                        'username': current_user.username,
+                        'email': current_user.email,
+                        'display_name': getattr(current_user, 'display_name', None),
+                    }
                 }
-            }
-        else:
+            else:
+                shared_data['auth'] = {
+                    'user': None
+                }
+        except Exception:
+            # ユーザー情報取得エラーの場合はデフォルト値
             shared_data['auth'] = {
                 'user': None
             }

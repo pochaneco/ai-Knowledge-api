@@ -11,7 +11,8 @@ from flask import current_app, url_for
 def vite_asset(path):
     """Viteビルド後のアセットパスを取得"""
     if current_app.config.get('ENV') == 'development':
-        return f'http://localhost:3000/{path}'
+        vite_port = os.environ.get('VITE_PORT', '25075')
+        return f'http://localhost:{vite_port}/{path}'
     
     # プロダクション用のマニフェストファイルを読み込み
     manifest_path = os.path.join(current_app.static_folder, 'dist', 'manifest.json')
@@ -27,8 +28,9 @@ def vite_asset(path):
 def vite_hmr():
     """Vite HMR用スクリプトタグを生成"""
     if current_app.config.get('ENV') == 'development':
-        return '''
-        <script type="module" src="http://localhost:3000/@vite/client"></script>
+        vite_port = os.environ.get('VITE_PORT', '25075')
+        return f'''
+        <script type="module" src="http://localhost:{vite_port}/@vite/client"></script>
         '''
     return ''
 

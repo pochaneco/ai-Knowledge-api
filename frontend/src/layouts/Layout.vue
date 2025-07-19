@@ -1,30 +1,31 @@
 <template>
-  <div id="app" class="min-h-screen bg-gray-50">
+  <div id="app" class="min-h-screen bg-indigo-800">
     <!-- ナビゲーションバー -->
-    <nav class="bg-white shadow-sm">
+    <nav class="bg-indigo-900 shadow-sm">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
           <div class="flex">
             <!-- ロゴ -->
             <div class="flex-shrink-0 flex items-center">
-              <Link href="/" class="text-xl font-bold text-gray-900">
-                AI Knowledge API
+              <img src="@image/icon.png" alt="Vidays Logo" class="h-12" />
+              <Link href="/" class="text-xl vidays-font font-bold text-white">
+                Vidays
               </Link>
             </div>
 
             <!-- ナビゲーションリンク -->
             <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
               <Link
-                v-if="$page.props.auth.user"
+                v-if="page.props.auth?.user"
                 href="/projects"
-                class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                class="border-transparent text-white hover:border-indigo-300 hover:text-indigo-100 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
               >
                 プロジェクト
               </Link>
               <Link
-                v-if="$page.props.auth.user"
+                v-if="page.props.auth?.user"
                 href="/knowledge"
-                class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                class="border-transparent text-white hover:border-indigo-300 hover:text-indigo-100 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
               >
                 ナレッジ
               </Link>
@@ -33,18 +34,18 @@
 
           <!-- ユーザーメニュー -->
           <div class="flex items-center">
-            <div v-if="$page.props.auth.user" class="ml-3 relative">
+            <div v-if="page.props.auth?.user" class="ml-3 relative">
               <div class="flex items-center space-x-4">
-                <span class="text-sm text-gray-700">
+                <span class="text-sm text-white">
                   {{
-                    $page.props.auth.user.display_name ||
-                    $page.props.auth.user.username
+                    page.props.auth.user.display_name ||
+                    page.props.auth.user.username
                   }}
                 </span>
                 <Link
                   href="/auth/logout"
                   method="post"
-                  class="text-sm text-gray-500 hover:text-gray-700"
+                  class="text-sm text-indigo-200 hover:text-white"
                 >
                   ログアウト
                 </Link>
@@ -53,13 +54,13 @@
             <div v-else class="flex items-center space-x-4">
               <Link
                 href="/auth/login"
-                class="text-sm text-gray-500 hover:text-gray-700"
+                class="text-sm text-indigo-200 hover:text-white"
               >
                 ログイン
               </Link>
               <Link
                 href="/auth/register"
-                class="bg-blue-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-700"
+                class="bg-orange-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-orange-500"
               >
                 登録
               </Link>
@@ -79,25 +80,33 @@
     </div>
 
     <!-- メインコンテンツ -->
-    <main class="py-6">
+    <main class="mb-16">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <slot />
       </div>
     </main>
 
     <!-- フッター -->
-    <footer class="bg-white border-t border-gray-200 mt-auto">
-      <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
-        <p class="text-center text-sm text-gray-500">
-          © 2024 AI Knowledge API. All rights reserved.
-        </p>
-      </div>
+    <footer class="bg-indigo-900 text-center py-2 mt-auto">
+      <p class="text-sm text-indigo-300">
+        © 2025 Vidays. Released under the
+        <a
+          href="https://opensource.org/licenses/MIT"
+          target="_blank"
+          class="text-indigo-200 hover:text-white underline"
+        >
+          MIT License </a
+        >.
+      </p>
+      <p class="mt-2 text-xs text-indigo-400">
+        このソフトウェアはMITライセンスの下で配布されています。詳細については上記のリンクをご確認ください。
+      </p>
     </footer>
   </div>
 </template>
 
 <script>
-import { Link } from "@inertiajs/vue3";
+import { Link, usePage } from "@inertiajs/vue3";
 import { computed } from "vue";
 
 export default {
@@ -106,12 +115,15 @@ export default {
     Link,
   },
   setup() {
+    const page = usePage();
+
     const flashMessage = computed(() => {
-      const flash = this.$page.props.flash;
+      const flash = page.props?.flash;
       return flash?.success || flash?.info || flash?.error;
     });
 
     return {
+      page,
       flashMessage,
     };
   },

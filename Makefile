@@ -1,6 +1,6 @@
-# AI Knowledge API - Makefile
+# Vidays - Makefile
 
-.PHONY: help install test test-unit test-integration test-coverage clean dev docker-build docker-up docker-down
+.PHONY: help install test test-unit test-integration test-coverage clean dev docker-build docker-up docker-down vite-dev vite-restart vite-exec vite-shell npm-install npm-build npm-test npm-deps docker-dev-full vite-logs dev-status
 
 help: ## Show this help message
 	@echo 'Usage: make [target]'
@@ -15,7 +15,7 @@ test: ## Run all tests (local environment, fast)
 	PYTHONPATH=. pytest
 
 test-docker: ## Run tests in Docker environment (CI/CD)
-	docker build -t ai-knowledge-test . && docker run --rm -v $(pwd):/app -w /app ai-knowledge-test sh -c "PYTHONPATH=/app pytest -v"
+	docker build -t vidays-test . && docker run --rm -v $(pwd):/app -w /app vidays-test sh -c "PYTHONPATH=/app pytest -v"
 
 test-unit: ## Run unit tests only
 	PYTHONPATH=. pytest -m "not integration"
@@ -27,7 +27,7 @@ test-coverage: ## Run tests with coverage report
 	PYTHONPATH=. pytest --cov=app --cov-report=html --cov-report=term-missing
 
 test-coverage-docker: ## Run tests with coverage in Docker
-	docker build -t ai-knowledge-test . && docker run --rm -v $(pwd):/app -w /app ai-knowledge-test sh -c "PYTHONPATH=/app pytest -v --cov=app --cov-report=html --cov-report=term-missing"
+	docker build -t vidays-test . && docker run --rm -v $(pwd):/app -w /app vidays-test sh -c "PYTHONPATH=/app pytest -v --cov=app --cov-report=html --cov-report=term-missing"
 
 clean: ## Clean up cache and temporary files
 	find . -type f -name "*.pyc" -delete
@@ -42,7 +42,29 @@ dev-docker: ## Start development server (Docker)
 	docker-compose --profile dev up -d
 
 dev-logs: ## Show development server logs (Docker)
-	docker-compose logs -f web frontend
+	docker-compose logs -f web
+
+vite-logs: ## Show Vite development server logs only
+	docker-compose logs -f web
+
+flask-dev: ## Start Flask development server with auto-reload
+	docker-compose exec web flask run --host=0.0.0.0 --port=5000 --debug
+
+flask-shell: ## Access Flask shell for debugging
+	docker-compose exec web flask shell
+
+flask-restart: ## Restart Flask development server
+	docker-compose restart web && sleep 2 && docker-compose logs --tail=10 web
+
+dev-status: ## Check development services status
+	@echo "Development services status:"
+	@docker-compose ps
+	@echo ""
+	@echo "Access URLs:"
+	@echo "Flask API: http://localhost:${WEB_API_PORT:-5000}"
+	@echo "Vite Frontend: http://localhost:${VITE_PORT:-5173} (run 'make vite-dev' to start)"
+	@echo "phpMyAdmin: http://localhost:${PHPMYADMIN_PORT:-8080}"
+	@echo "MailHog: http://localhost:${MAILHOG_WEB_PORT:-8025}"
 
 docker-build: ## Build Docker images
 	docker-compose build
@@ -53,11 +75,55 @@ docker-up: ## Start Docker containers (production mode)
 docker-dev: ## Start Docker containers (development mode)
 	docker-compose --profile dev up -d
 
+docker-dev-restart: ## Restart Docker containers (development mode)
+	docker-compose --profile dev down
+	docker-compose --profile dev up -d
+
+docker-dev-down: ## Stop Docker containers (development mode)
+	docker-compose --profile dev down
+
+vite-dev: ## Start Vite development server in web container
+	docker-compose exec web npm run dev
+
+vite-build:  ## Start Vite development server in web container
+	docker-compose exec web npm run build
+
+vite-restart: ## Restart Vite dev server in web container
+	docker-compose exec web pkill -f "vite" || true
+	docker-compose exec web npm run dev &
+
+vite-exec: ## Execute command in web container (usage: make vite-exec cmd="npm install")
+	docker-compose exec web $(cmd)
+
+vite-shell: ## Open shell in web container
+	docker-compose exec web bash
+
+npm-install: ## Install npm packages in web container
+	docker-compose exec web npm install
+
+npm-build: ## Build frontend for production in web container
+	docker-compose exec web npm run build
+
+npm-test: ## Run frontend tests in web container
+	docker-compose exec web npm test
+
+npm-deps: ## Show npm dependencies in web container
+	docker-compose exec web npm list
+
+docker-dev-full: ## Start Docker containers and ensure Vite is running
+	docker-compose --profile dev up -d
+	@echo "Waiting for services to start..."
+	@sleep 3
+	@echo "Development servers status:"
+	@echo "Flask API: http://localhost:${WEB_API_PORT:-5000}"
+	@echo "Vite Frontend: http://localhost:${VITE_PORT:-5173}"
+	@docker-compose ps
+
 docker-down: ## Stop Docker containers
 	docker-compose down
 
 docker-test: ## Run tests in Docker environment (SQLite)
-	docker build -t ai-knowledge-test . && docker run --rm -v $(pwd):/app -w /app ai-knowledge-test sh -c "PYTHONPATH=/app pytest -v"
+	docker build -t vidays-test . && docker run --rm -v $(pwd):/app -w /app vidays-test sh -c "PYTHONPATH=/app pytest -v"
 
 docker-test-mysql: ## Run integration tests with MySQL
 	docker-compose up -d db

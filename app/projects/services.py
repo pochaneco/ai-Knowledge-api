@@ -116,7 +116,7 @@ class ProjectService:
         invitation_url = url_for('project.accept_invitation', token=invitation.token, _external=True)
         
         msg = Message(
-            subject=f'【AI Knowledge API】プロジェクト「{invitation.project.name}」への招待',
+            subject=f'【Vidays】プロジェクト「{invitation.project.name}」への招待',
             recipients=[invitation.email],
             html=f'''
             <h2>プロジェクトへの招待</h2>

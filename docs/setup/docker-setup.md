@@ -13,8 +13,8 @@ Docker Composeを使用した開発環境のセットアップ方法です。
 ### 1. リポジトリのクローン
 
 ```bash
-git clone https://github.com/pochaneco/ai-Knowledge-api.git
-cd ai-Knowledge-api
+git clone https://github.com/pochaneco/vidays.git
+cd vidays
 ```
 
 ### 2. 環境変数の設定
@@ -193,10 +193,10 @@ pytest tests/test_auth.py -v
 #### Docker環境でのテスト
 ```bash
 # 基本的なDocker内テスト実行（CI/CD推奨）
-docker build -t ai-knowledge-test . && docker run --rm -v $(pwd):/app -w /app ai-knowledge-test sh -c "PYTHONPATH=/app pytest -v"
+docker build -t vidays-test . && docker run --rm -v $(pwd):/app -w /app vidays-test sh -c "PYTHONPATH=/app pytest -v"
 
 # カバレッジ付きDocker内テスト
-docker build -t ai-knowledge-test . && docker run --rm -v $(pwd):/app -w /app ai-knowledge-test sh -c "PYTHONPATH=/app pytest -v --cov=app --cov-report=term-missing --cov-report=html"
+docker build -t vidays-test . && docker run --rm -v $(pwd):/app -w /app vidays-test sh -c "PYTHONPATH=/app pytest -v --cov=app --cov-report=term-missing --cov-report=html"
 
 # 既存webコンテナでテスト実行
 docker-compose up -d web

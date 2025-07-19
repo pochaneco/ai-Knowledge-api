@@ -1,4 +1,4 @@
-# AI Knowledge API - Copilot Instructions
+# Vidays - Copilot Instructions
 
 ## Architecture Overview
 

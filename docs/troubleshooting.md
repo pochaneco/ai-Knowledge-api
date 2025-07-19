@@ -1,6 +1,6 @@
 # トラブルシューティングガイド
 
-AI Knowledge APIでよく発生する問題とその解決方法をまとめています。
+Vidaysでよく発生する問題とその解決方法をまとめています。
 
 ## 🐳 Docker関連の問題
 
@@ -320,10 +320,10 @@ ModuleNotFoundError: No module named 'app'
 ```bash
 # Gunicornの設定確認
 # gunicorn.conf.py
-pythonpath = '/var/www/ai-knowledge-api'
+pythonpath = '/var/www/vidays'
 
 # 手動でGunicornを起動してテスト
-cd /var/www/ai-knowledge-api
+cd /var/www/vidays
 gunicorn -c gunicorn.conf.py app:app
 ```
 
@@ -332,7 +332,7 @@ gunicorn -c gunicorn.conf.py app:app
 **解決方法:**
 ```bash
 # Gunicornサービスの状態確認
-sudo systemctl status ai-knowledge-api
+sudo systemctl status vidays
 
 # Nginxエラーログの確認
 sudo tail -f /var/log/nginx/error.log
@@ -409,7 +409,7 @@ ModuleNotFoundError: No module named 'app'
 **解決方法:**
 ```bash
 # PYTHONPATHを明示的に設定
-docker run --rm -v $(pwd):/app -w /app ai-knowledge-test sh -c "PYTHONPATH=/app pytest -v"
+docker run --rm -v $(pwd):/app -w /app vidays-test sh -c "PYTHONPATH=/app pytest -v"
 
 # または、Docker Composeで環境変数を設定
 environment:

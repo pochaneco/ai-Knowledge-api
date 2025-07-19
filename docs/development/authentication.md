@@ -1,4 +1,4 @@
-# AI Knowledge API 🚀
+# Vidays 🚀
 
 ユーザー認証、プロジェクト管理、チーム招待機能を備えたナレッジベース管理APIです。
 
@@ -39,7 +39,7 @@
 ```bash
 # リポジトリをクローン
 git clone <repository-url>
-cd ai-Knowledge-api
+cd vidays
 
 # 環境変数を設定
 cp .env.docker .env.local
@@ -128,7 +128,7 @@ python app.py
 ## 🏗️ アーキテクチャ
 
 ```
-ai-Knowledge-api/
+vidays/
 ├── app.py                 # メインアプリケーション
 ├── models.py             # データベースモデル
 ├── config.py             # 設定管理

@@ -49,12 +49,12 @@ EXIT;
 
 ```bash
 # デプロイ用ディレクトリの作成
-sudo mkdir -p /var/www/ai-knowledge-api
-sudo chown $USER:www-data /var/www/ai-knowledge-api
+sudo mkdir -p /var/www/vidays
+sudo chown $USER:www-data /var/www/vidays
 
 # アプリケーションのクローン
-cd /var/www/ai-knowledge-api
-git clone https://github.com/pochaneco/ai-Knowledge-api.git .
+cd /var/www/vidays
+git clone https://github.com/pochaneco/vidays.git .
 
 # Python仮想環境の作成
 python3 -m venv venv
@@ -148,20 +148,20 @@ group = "www-data"
 
 ### 8. Systemdサービスの作成
 
-`/etc/systemd/system/ai-knowledge-api.service`：
+`/etc/systemd/system/vidays.service`：
 
 ```ini
 [Unit]
-Description=AI Knowledge API
+Description=Vidays
 After=network.target
 
 [Service]
 User=www-data
 Group=www-data
-WorkingDirectory=/var/www/ai-knowledge-api
-Environment="PATH=/var/www/ai-knowledge-api/venv/bin"
-EnvironmentFile=/var/www/ai-knowledge-api/.env.production
-ExecStart=/var/www/ai-knowledge-api/venv/bin/gunicorn -c gunicorn.conf.py app:app
+WorkingDirectory=/var/www/vidays
+Environment="PATH=/var/www/vidays/venv/bin"
+EnvironmentFile=/var/www/vidays/.env.production
+ExecStart=/var/www/vidays/venv/bin/gunicorn -c gunicorn.conf.py app:app
 Restart=always
 
 [Install]
@@ -171,13 +171,13 @@ WantedBy=multi-user.target
 ```bash
 # サービスの有効化と起動
 sudo systemctl daemon-reload
-sudo systemctl enable ai-knowledge-api
-sudo systemctl start ai-knowledge-api
+sudo systemctl enable vidays
+sudo systemctl start vidays
 ```
 
 ### 9. Nginxの設定
 
-`/etc/nginx/sites-available/ai-knowledge-api`：
+`/etc/nginx/sites-available/vidays`：
 
 ```nginx
 server {
@@ -202,7 +202,7 @@ server {
     
     # 静的ファイルの配信
     location /static/ {
-        alias /var/www/ai-knowledge-api/app/static/;
+        alias /var/www/vidays/app/static/;
         expires 1y;
         add_header Cache-Control "public, immutable";
     }
@@ -220,7 +220,7 @@ server {
 
 ```bash
 # サイトの有効化
-sudo ln -s /etc/nginx/sites-available/ai-knowledge-api /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/vidays /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl reload nginx
 ```
@@ -231,8 +231,8 @@ sudo systemctl reload nginx
 
 ```bash
 # ローカルでファイルを準備
-git clone https://github.com/pochaneco/ai-Knowledge-api.git
-cd ai-Knowledge-api
+git clone https://github.com/pochaneco/vidays.git
+cd vidays
 
 # 本番用ビルド
 npm install
@@ -311,14 +311,14 @@ add_header Content-Security-Policy "default-src 'self'" always;
 # backup.sh
 DATE=$(date +%Y%m%d_%H%M%S)
 mysqldump -u app_user -p ai_knowledge_db > backup_${DATE}.sql
-tar -czf app_backup_${DATE}.tar.gz /var/www/ai-knowledge-api --exclude=venv --exclude=node_modules
+tar -czf app_backup_${DATE}.tar.gz /var/www/vidays --exclude=venv --exclude=node_modules
 ```
 
 ### ログ監視
 
 ```bash
 # アプリケーションログの確認
-sudo journalctl -u ai-knowledge-api -f
+sudo journalctl -u vidays -f
 
 # Nginxログの確認
 sudo tail -f /var/log/nginx/access.log
@@ -329,7 +329,7 @@ sudo tail -f /var/log/nginx/error.log
 
 ```bash
 # アプリケーションの停止
-sudo systemctl stop ai-knowledge-api
+sudo systemctl stop vidays
 
 # コードの更新
 git pull origin main
@@ -346,7 +346,7 @@ npm install
 npm run build
 
 # アプリケーションの再起動
-sudo systemctl start ai-knowledge-api
+sudo systemctl start vidays
 ```
 
 ## 📊 監視とメンテナンス

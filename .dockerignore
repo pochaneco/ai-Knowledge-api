@@ -1,45 +1,46 @@
 # Git関連
-.git
+.git/
 .gitignore
+.github/
 README.md
 
 # Python関連
-__pycache__
+__pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
-env
+.venv/
+env/
 pip-log.txt
-pip-delete-this-directory.txt
 .tox
 .coverage
-.coverage.*
 .cache
 nosetests.xml
 coverage.xml
 *.cover
 *.log
-.git
 .mypy_cache
 .pytest_cache
 .hypothesis
+htmlcov/
 
-# Node.js関連（開発時は除外、本番では含める）
-# node_modules  # コメントアウト - Dockerで管理
+# Node.js関連
 .npm
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# ローカル環境ファイル
+# 環境ファイル（.env は含める）
 .env.local
 .env.production
+.env.example
+.env.docker.example
 *.log
 
 # IDE関連
-.vscode
-.idea
+.vscode/
+.idea/
 *.swp
 *.swo
 *~
@@ -55,3 +56,4 @@ Thumbs.db
 
 # Docker関連
 docker-compose.override.yml
+Dockerfile*

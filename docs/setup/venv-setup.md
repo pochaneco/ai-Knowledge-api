@@ -14,8 +14,8 @@ Python仮想環境を使用したローカル開発環境のセットアップ�
 ### 1. リポジトリのクローン
 
 ```bash
-git clone https://github.com/pochaneco/ai-Knowledge-api.git
-cd ai-Knowledge-api
+git clone https://github.com/pochaneco/vidays.git
+cd vidays
 ```
 
 ### 2. Python仮想環境の作成

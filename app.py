@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-AI Knowledge API エントリーポイント
+Vidays エントリーポイント
 
 新しいモジュール化された構造を使用したFlaskアプリケーション
 """

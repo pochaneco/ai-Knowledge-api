@@ -4,28 +4,30 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title or 'AI Knowledge API' }}</title>
+    <title>{{ title or 'Vidays' }}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Tailwind CSS CDN (開発用) -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin">
+    <link href="https://fonts.googleapis.com/css2?family=Special+Gothic+Expanded+One&display=swap" rel="stylesheet">
 
     <!-- Vite開発サーバー用 -->
     {% if config.ENV == 'development' %}
-      <script type="module" src="http://localhost:3000/@vite/client"></script>
-      <script type="module" src="http://localhost:3000/src/app.js"></script>
-    {% else %}
-      <!-- プロダクション用ビルドファイル -->
-      {{ vite_hmr() }}
-      {{ vite_asset('src/app.js') }}
+      {{ vite_hmr() | safe }}
     {% endif %}
+
+    <script type="module" src="{{ vite_asset('src/app.js') }}"></script>
 
     {% block head %}{% endblock %}
   </head>
 
   <body class="bg-gray-50">
     {% block body %}
-      <div id="app" data-page="{{ page|tojson }}"></div>
+      <!-- デバッグ: pageデータの内容を確認 -->
+      <!-- Page data: {{ page }} -->
+      <div id="app" data-page='{{ page|tojson }}'></div>
     {% endblock %}
   </body>
 

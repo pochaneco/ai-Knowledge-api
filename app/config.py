@@ -7,6 +7,11 @@ from dotenv import load_dotenv
 class Config:
     """基本設定クラス"""
     
+    def __init__(self):
+        # .env を読み込み
+        if os.path.exists('.env'):
+            load_dotenv('.env')
+    
     @staticmethod
     def init_app(app):
         pass
@@ -14,13 +19,7 @@ class Config:
 class DevelopmentConfig(Config):
     """開発環境設定"""
     
-    def __init__(self):
-        # .env.local を読み込み
-        if os.path.exists('.env.local'):
-            load_dotenv('.env.local')
-        else:
-            load_dotenv('.env.example')
-    
+    ENV = 'development'
     DEBUG = True
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'development-secret-key'
     
@@ -42,7 +41,7 @@ class DevelopmentConfig(Config):
     MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', 'true').lower() in ['true', 'on', '1']
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
-    MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER') or 'noreply@ai-knowledge-api.com'
+    MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER') or 'noreply@vidays.com'
     
     # Google OAuth設定
     GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
@@ -50,14 +49,7 @@ class DevelopmentConfig(Config):
 
 class ProductionConfig(Config):
     """本番環境設定"""
-    
-    def __init__(self):
-        # .env.production を読み込み
-        if os.path.exists('.env.production'):
-            load_dotenv('.env.production')
-        else:
-            load_dotenv('.env.example')
-    
+            
     DEBUG = False
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
     
@@ -79,7 +71,7 @@ class ProductionConfig(Config):
     MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', 'true').lower() in ['true', 'on', '1']
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
-    MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER') or 'noreply@ai-knowledge-api.com'
+    MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER') or 'noreply@vidays.com'
     
     # Google OAuth設定
     GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')

@@ -1,11 +1,11 @@
 # 開発ガイド
 
-AI Knowledge APIの開発に参加するための包括的なガイドです。
+Vidaysの開発に参加するための包括的なガイドです。
 
 ## 📁 プロジェクト構造
 
 ```
-ai-Knowledge-api/
+vidays/
 ├── app/                    # Flaskアプリケーション
 │   ├── __init__.py        # アプリケーションファクトリ
 │   ├── config.py          # 設定管理
@@ -63,7 +63,7 @@ pytest -v
 pytest --cov=app --cov-report=html
 
 # Docker環境でのテスト（CI/CD用）
-docker build -t ai-knowledge-test . && docker run --rm -v $(pwd):/app -w /app ai-knowledge-test sh -c "PYTHONPATH=/app pytest -v"
+docker build -t vidays-test . && docker run --rm -v $(pwd):/app -w /app vidays-test sh -c "PYTHONPATH=/app pytest -v"
 
 # MySQL統合テスト
 docker-compose --profile test run --rm test

@@ -51,6 +51,20 @@ if [ -d "data" ]; then
     find data -type f -exec chmod 644 {} \;
 fi
 
+# Viteビルド出力ディレクトリの権限設定
+echo "Viteビルド出力ディレクトリの権限設定..."
+if [ -d "app/static" ]; then
+    chmod 755 app/static
+    if [ -d "app/static/dist" ]; then
+        chmod 755 app/static/dist
+        find app/static/dist -type f -exec chmod 644 {} \;
+        find app/static/dist -type d -exec chmod 755 {} \;
+    else
+        mkdir -p app/static/dist
+        chmod 755 app/static/dist
+    fi
+fi
+
 echo "権限設定完了！"
 echo ""
 echo "主要なファイル・フォルダの権限:"
